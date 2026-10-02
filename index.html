@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lumière Labs | The Cellular Barrier Glow System</title>
+<meta name="description" content="Repair your moisture barrier in 48 hours. Biomimetic lipids, 2% pure Ectoin and 5-weight hyaluronic acid — dermatologist approved." />
+
+<!-- Flag JS availability early so reveal states never hide content without scripts -->
+<script>document.documentElement.classList.add('js');</script>
+
+<!-- Fonts: Cormorant Garamond (display serif) + Plus Jakarta Sans (text) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'serif'],
+          sans:  ['"Plus Jakarta Sans"', 'sans-serif'],
+        },
+        colors: {
+          pearl:      { 25:'#FDFBF9', 50:'#FAF5F2', 100:'#F5ECE7', 200:'#EBDCD5', 300:'#DEC4B8' },
+          roseQuartz: { 50:'#FDF5F5', 100:'#FBECEB', 200:'#F7D6D4', 300:'#EEB7B4', 400:'#E1928E' },
+          velvetPlum: { 600:'#8E3649', 700:'#752838', 800:'#5C1D2B', 900:'#43131E' },
+          champagne:  { 300:'#EADBB6', 400:'#DEC591', 500:'#CBA768', 600:'#B58E4E' },
+          skinText:   { 700:'#4A353A', 800:'#342226', 900:'#231216' }
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  ::selection { background:#F7D6D4; color:#43131E; }
+  body { text-rendering: optimizeLegibility; }
+
+  /* ---------- whisper of film grain over the pearl base ---------- */
+  .grain {
+    position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+
+  /* luminous shadow under the offer card */
+  .glow-rose { box-shadow: 0 12px 44px -12px rgba(225,146,142,.32); }
+
+  /* micro-fade used when swapping dynamic copy */
+  .swappable { transition: opacity .18s ease; }
+  .swapping  { opacity: 0; }
+
+  /* ---------- scroll reveal ---------- */
+  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .js .reveal.in-view { opacity: 1; transform: none; }
+
+  /* ---------- bundle tier radios ---------- */
+  .tier { border: 1px solid #EBDCD5; background: #fff; cursor: pointer; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+  .tier:hover { border-color: #EEB7B4; }
+  .tier.active { border-color: #752838; background: #FDF5F5; box-shadow: 0 8px 20px -10px rgba(117,40,56,.3); }
+  .radio { width: 16px; height: 16px; border: 1.5px solid #DEC4B8; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; flex: none; transition: border-color .2s ease; }
+  .radio .dot { width: 8px; height: 8px; border-radius: 999px; background: transparent; transition: background .2s ease; }
+  .tier.active .radio { border-color: #752838; }
+  .tier.active .radio .dot { background: #752838; }
+
+  /* ---------- skin priority tabs ---------- */
+  .skin-tab { background: #fff; border: 1px solid #F7D6D4; color: #342226; transition: all .2s ease; }
+  .skin-tab:hover { border-color: #E1928E; }
+  .skin-tab.active { background: #752838; border-color: #752838; color: #fff; box-shadow: 0 6px 16px -8px rgba(117,40,56,.55); }
+
+  /* ---------- FAQ accordion (grid-rows height animation) ---------- */
+  .faq-item { transition: border-color .25s ease; }
+  .faq-item.open { border-color: #EEB7B4; }
+  .faq-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+  .faq-body > div { overflow: hidden; }
+  .faq-item.open .faq-body { grid-template-rows: 1fr; }
+  .faq-icon { transition: transform .3s ease; }
+  .faq-item.open .faq-icon { transform: rotate(180deg); }
+
+  /* ---------- checkout toast ---------- */
+  #toast { transform: translateY(6rem); opacity: 0; transition: transform .45s cubic-bezier(.21,1.02,.73,1), opacity .3s ease; }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ---------- product still-life ---------- */
+  .side-fig { transition: opacity .45s ease, transform .45s ease; }
+  .side-fig.gone { opacity: 0; transform: translateY(10px) scale(.9); pointer-events: none; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .float { animation: floaty 6s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { opacity:.6; transform: translate(-50%,-50%) scale(1); } 50% { opacity:1; transform: translate(-50%,-50%) scale(1.07); } }
+  .glow { animation: breathe 7s ease-in-out infinite; }
+
+  /* ---------- ingredient spec sheet ---------- */
+  .ing { transition: background .25s ease; }
+  .ing:hover { background: #FFFFFF; }
+  .ing .num { transition: color .25s ease; }
+  .ing:hover .num { color: #752838; }
+
+  /* ---------- 48-hour timeline choreography ---------- */
+  .js .tl-item { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .js #timeline.in-view .tl-item { opacity: 1; transform: none; }
+  .js #timeline.in-view .tl-item:nth-child(1) { transition-delay: .10s; }
+  .js #timeline.in-view .tl-item:nth-child(2) { transition-delay: .32s; }
+  .js #timeline.in-view .tl-item:nth-child(3) { transition-delay: .54s; }
+  .js #timeline.in-view .tl-item:nth-child(4) { transition-delay: .76s; }
+  .js .tl-dot { transform: scale(0); transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
+  .js #timeline.in-view .tl-dot { transform: scale(1); }
+  .js #timeline.in-view .tl-item:nth-child(1) .tl-dot { transition-delay: .30s; }
+  .js #timeline.in-view .tl-item:nth-child(2) .tl-dot { transition-delay: .52s; }
+  .js #timeline.in-view .tl-item:nth-child(3) .tl-dot { transition-delay: .74s; }
+  .js #timeline.in-view .tl-item:nth-child(4) .tl-dot { transition-delay: .96s; }
+  .js .tl-line-h { transform: scaleX(0); transform-origin: left; transition: transform 1.9s cubic-bezier(.22,.61,.36,1) .2s; }
+  .js #timeline.in-view .tl-line-h { transform: scaleX(1); }
+  .js .tl-line-v { transform: scaleY(0); transform-origin: top; transition: transform 1.9s cubic-bezier(.22,.61,.36,1) .2s; }
+  .js #timeline.in-view .tl-line-v { transform: scaleY(1); }
+
+  /* ---------- hand-drawn champagne swash under "48 hours" ---------- */
+  .js .swash path { stroke-dasharray: 210; stroke-dashoffset: 210; }
+  .js .reveal.in-view .swash path { animation: swash-draw 1.1s cubic-bezier(.65,0,.35,1) .6s forwards; }
+  @keyframes swash-draw { to { stroke-dashoffset: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+
+<body class="font-sans antialiased bg-pearl-25 text-skinText-800">
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ================= TOP CONVERSION BANNER ================= -->
+<div class="bg-roseQuartz-100 border-b border-roseQuartz-200">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between gap-4 text-xs font-medium text-velvetPlum-800">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <span class="relative flex w-2 h-2 shrink-0">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-velvetPlum-600 opacity-60"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-velvetPlum-600"></span>
+      </span>
+      <span class="truncate">Batch #048 released today — <strong>free Peptide Eye Glaze ($34 value)</strong> with the 3-Piece System.</span>
+    </div>
+    <div class="hidden sm:flex items-center gap-4 text-[10px] uppercase tracking-[0.14em] font-bold shrink-0">
+      <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i> Dermatologist Approved</span>
+      <span class="text-roseQuartz-400">•</span>
+      <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 30-Day Empty-Bottle Guarantee</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header id="site-header" class="sticky top-0 z-40 bg-pearl-25/90 backdrop-blur-md border-b border-pearl-200 transition-shadow">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+    <a href="#" class="flex items-center gap-2.5 shrink-0">
+      <div class="w-9 h-9 rounded-full bg-velvetPlum-700 text-pearl-25 flex items-center justify-center font-serif text-base font-bold shadow-sm">L</div>
+      <div class="leading-none">
+        <span class="font-serif text-lg sm:text-2xl font-bold tracking-tight text-skinText-900 block">LUMIÈRE LABS</span>
+        <span class="text-[9px] uppercase tracking-[0.28em] text-champagne-600 font-bold block mt-1">Cellular Dermatology</span>
+      </div>
+    </a>
+    <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-1.5 text-[11px] font-semibold text-skinText-700 bg-pearl-50 border border-pearl-200 px-3 py-1.5 rounded-full">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-velvetPlum-700"></i>
+        Microbiome Certified Clean
+      </div>
+      <a href="#order-now" class="px-4 sm:px-5 py-2.5 rounded-full bg-velvetPlum-700 hover:bg-velvetPlum-800 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all shadow-sm hover:shadow-md flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-roseQuartz-400">
+        Claim Your Starter Set
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO: CLINICAL OFFER + SKIN MATCHER ================= -->
+<section class="relative overflow-hidden bg-gradient-to-b from-pearl-50 via-roseQuartz-50/60 to-pearl-25 border-b border-pearl-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-16 lg:pt-16 lg:pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+      <!-- Left: value proposition -->
+      <div class="lg:col-span-6 space-y-6 reveal">
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-roseQuartz-200 shadow-sm">
+          <span class="flex gap-0.5 text-amber-400">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+          </span>
+          <span class="text-xs font-bold text-skinText-900">4.94 / 5</span>
+          <span class="text-[11px] text-skinText-700">· 3,400+ verified trial reviews</span>
+        </div>
+
+        <h1 class="font-serif text-[2.15rem] leading-[1.1] sm:text-5xl sm:leading-[1.08] lg:text-[3.4rem] font-medium tracking-tight text-skinText-900">
+          Repair your moisture barrier in&nbsp;<span class="relative inline-block whitespace-nowrap">48 hours<svg class="swash absolute left-0 -bottom-[3px] w-full h-2.5" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 60 3, 140 3, 197 8" fill="none" stroke="#CBA768" stroke-width="2.5" stroke-linecap="round" opacity=".75"/></svg></span>.
+          <em class="text-velvetPlum-700">Glow for a lifetime.</em>
+        </h1>
+
+        <p class="text-sm sm:text-[15px] text-skinText-700 leading-relaxed max-w-xl">
+          Stop confusing sensitive skin with 10-step routines. Lumière’s biomimetic lipid emulsion pairs
+          <strong class="text-skinText-800">2% pure Ectoin</strong> with <strong class="text-skinText-800">5-weight Hyaluronic Acid</strong>
+          to lock in moisture, calm redness and deliver glass-skin bounce.
+        </p>
+
+        <!-- clinical micro-data bar (counts up on load) -->
+        <div class="stat-cell grid grid-cols-3 border-y border-roseQuartz-200 divide-x divide-pearl-200 py-4">
+          <div class="pr-4">
+            <p class="font-serif text-2xl sm:text-3xl font-bold text-velvetPlum-800"><span class="count" data-count="184" data-decimals="0" data-prefix="+" data-suffix="%">+184%</span></p>
+            <p class="text-[11px] text-skinText-700 font-medium mt-0.5">Instant Moisture Surge</p>
+          </div>
+          <div class="px-4">
+            <p class="font-serif text-2xl sm:text-3xl font-bold text-velvetPlum-800"><span class="count" data-count="96.8" data-decimals="1" data-suffix="%">96.8%</span></p>
+            <p class="text-[11px] text-skinText-700 font-medium mt-0.5">Reduction in Redness</p>
+          </div>
+          <div class="pl-4">
+            <p class="font-serif text-2xl sm:text-3xl font-bold text-velvetPlum-800">Zero</p>
+            <p class="text-[11px] text-skinText-700 font-medium mt-0.5">Comedogenic Fillers</p>
+          </div>
+        </div>
+
+        <!-- skin priority matcher -->
+        <div class="space-y-2.5">
+          <span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-skinText-700 block">Select your skin priority</span>
+          <div class="grid grid-cols-3 gap-2" role="tablist" aria-label="Skin priority">
+            <button type="button" id="btn-skin-barrier" class="skin-tab active py-2.5 px-1.5 text-[10px] sm:text-xs font-semibold rounded-lg leading-snug" onclick="setSkinProfile('barrier')">Dehydrated / Irritated</button>
+            <button type="button" id="btn-skin-radiance" class="skin-tab py-2.5 px-1.5 text-[10px] sm:text-xs font-semibold rounded-lg leading-snug" onclick="setSkinProfile('radiance')">Dullness / Uneven Tone</button>
+            <button type="button" id="btn-skin-elasticity" class="skin-tab py-2.5 px-1.5 text-[10px] sm:text-xs font-semibold rounded-lg leading-snug" onclick="setSkinProfile('elasticity')">Loss of Bounce / Lines</button>
+          </div>
+        </div>
+
+        <!-- dynamic clinical recommendation -->
+        <div class="p-3.5 rounded-xl bg-white border border-roseQuartz-200 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-roseQuartz-100 flex items-center justify-center text-velvetPlum-700 shrink-0">
+            <i data-lucide="sparkle" class="w-4 h-4"></i>
+          </div>
+          <p class="text-xs text-skinText-800 leading-relaxed swappable" id="dynamic-skin-message">
+            <strong>Clinical Recommendation:</strong> our biomimetic lipid trio rapidly seals peeling flakiness and calms micro-inflammation within two applications.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: offer card -->
+      <div class="lg:col-span-6 reveal scroll-mt-28" style="transition-delay:120ms" id="order-now">
+        <div class="bg-white p-5 sm:p-7 rounded-3xl border border-roseQuartz-200 shadow-xl glow-rose">
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-pearl-200 mb-5">
+            <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.18em] bg-roseQuartz-100 text-velvetPlum-800 px-3 py-1.5 rounded-full">Step 1 — Choose Your Glow Protocol</span>
+            <span class="text-[10px] sm:text-xs font-bold text-champagne-600 flex items-center gap-1.5 whitespace-nowrap">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> In stock · ships 24h
+            </span>
+          </div>
+
+          <!-- product still-life (pure SVG, reacts to the selected bundle) -->
+          <div class="relative bg-gradient-to-tr from-pearl-50 via-roseQuartz-50 to-pearl-100 rounded-2xl border border-pearl-200 mb-5 overflow-hidden">
+            <div class="relative h-64 sm:h-72">
+              <div class="glow absolute left-1/2 top-1/2 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-roseQuartz-200/45 blur-3xl" aria-hidden="true"></div>
+
+              <!-- Silk Infusion cream jar -->
+              <figure id="fig-cream" class="side-fig absolute bottom-1 left-[4%] sm:left-[10%] z-[5] flex flex-col items-center">
+                <svg viewBox="0 0 132 110" class="h-20 sm:h-28 w-auto" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="crGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.55" stop-color="#F7EFEB"/><stop offset="1" stop-color="#E9D9D1"/></linearGradient>
+                    <linearGradient id="crCap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#43131E"/><stop offset="0.5" stop-color="#752838"/><stop offset="1" stop-color="#5C1D2B"/></linearGradient>
+                  </defs>
+                  <rect x="23" y="8" width="86" height="21" rx="6" fill="url(#crCap)"/>
+                  <rect x="29" y="11" width="5" height="15" rx="2.5" fill="#FFFFFF" opacity="0.18"/>
+                  <rect x="21" y="29" width="90" height="6" rx="2" fill="#CBA768"/>
+                  <path d="M21 35 h90 v54 c0 9 -7 14 -15 14 H36 c-8 0 -15 -5 -15 -14 z" fill="url(#crGlass)" stroke="#DEC4B8" stroke-width="0.8"/>
+                  <rect x="34" y="48" width="64" height="34" rx="3" fill="#FFFFFF" stroke="#EBDCD5" stroke-width="0.8"/>
+                  <text x="66" y="60" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="8" font-weight="700" letter-spacing="1.8" fill="#752838">LUMIÈRE</text>
+                  <line x1="45" y1="64.5" x2="87" y2="64.5" stroke="#CBA768" stroke-width="0.7"/>
+                  <text x="66" y="73" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="3.9" font-weight="600" letter-spacing="0.8" fill="#4A353A">SILK INFUSION CREAM</text>
+                  <text x="66" y="79" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="3.4" letter-spacing="0.8" fill="#B58E4E">CERAMIDE NP · 50 ML</text>
+                  <rect x="26" y="40" width="5" height="52" rx="2.5" fill="#FFFFFF" opacity="0.5"/>
+                </svg>
+                <div class="h-2 w-14 sm:w-20 -mt-1 rounded-full bg-velvetPlum-900/10 blur-[3px]" aria-hidden="true"></div>
+                <figcaption class="mt-1.5 text-[8px] sm:text-[9px] font-extrabold tracking-[0.18em] text-skinText-700/80">SILK CREAM</figcaption>
+              </figure>
+
+              <!-- Cellular Elixir serum (hero product) -->
+              <figure id="fig-serum" class="absolute bottom-1 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
+                <div class="float flex flex-col items-center">
+                  <svg viewBox="0 0 140 212" class="h-40 sm:h-48 w-auto" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="serGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.5" stop-color="#F7EFEB"/><stop offset="1" stop-color="#E9D9D1"/></linearGradient>
+                      <linearGradient id="serLiq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D6D4"/><stop offset="1" stop-color="#E1928E"/></linearGradient>
+                      <linearGradient id="serCap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#43131E"/><stop offset="0.5" stop-color="#752838"/><stop offset="1" stop-color="#5C1D2B"/></linearGradient>
+                    </defs>
+                    <rect x="57" y="8" width="26" height="26" rx="13" fill="url(#serCap)"/>
+                    <ellipse cx="63" cy="17" rx="2.6" ry="4.5" fill="#FFFFFF" opacity="0.16"/>
+                    <rect x="52" y="34" width="36" height="16" rx="3" fill="url(#serCap)"/>
+                    <g stroke="#FBECEB" stroke-width="1" opacity="0.35">
+                      <line x1="59" y1="37" x2="59" y2="47"/><line x1="65" y1="37" x2="65" y2="47"/><line x1="70" y1="37" x2="70" y2="47"/><line x1="75" y1="37" x2="75" y2="47"/><line x1="81" y1="37" x2="81" y2="47"/>
+                    </g>
+                    <rect x="61" y="50" width="18" height="12" fill="#DEC4B8"/>
+                    <path d="M40 62 h60 c8 0 14 6 14 14 v118 c0 8 -6 14 -14 14 H40 c-8 0 -14 -6 -14 -14 V76 c0 -8 6 -14 14 -14 z" fill="url(#serGlass)" stroke="#DEC4B8" stroke-width="0.8"/>
+                    <rect x="68.5" y="52" width="3" height="66" fill="#C9B2A6" opacity="0.85"/>
+                    <path d="M26 116 h88 v78 c0 8 -6 14 -14 14 H40 c-8 0 -14 -6 -14 -14 z" fill="url(#serLiq)" opacity="0.92"/>
+                    <rect x="41" y="94" width="58" height="64" rx="3" fill="#FFFFFF" stroke="#EBDCD5" stroke-width="0.8"/>
+                    <text x="70" y="110" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="9.5" font-weight="700" letter-spacing="2" fill="#752838">LUMIÈRE</text>
+                    <line x1="52" y1="116" x2="88" y2="116" stroke="#CBA768" stroke-width="0.8"/>
+                    <text x="70" y="128" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="4.3" font-weight="600" letter-spacing="0.8" fill="#4A353A">CELLULAR ELIXIR</text>
+                    <text x="70" y="138" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="3.8" letter-spacing="0.7" fill="#B58E4E">2% ECTOIN · 50 ML</text>
+                    <path d="M70 142 c-2.2 3 -3.6 4.9 -3.6 6.8 a3.6 3.6 0 0 0 7.2 0 c0 -1.9 -1.4 -3.8 -3.6 -6.8 z" fill="#EEB7B4"/>
+                    <rect x="33" y="72" width="7" height="116" rx="3.5" fill="#FFFFFF" opacity="0.55"/>
+                    <rect x="100" y="78" width="3.5" height="104" rx="1.75" fill="#FFFFFF" opacity="0.35"/>
+                  </svg>
+                  <div class="h-2.5 w-20 sm:w-24 -mt-1.5 rounded-full bg-velvetPlum-900/15 blur-[4px]" aria-hidden="true"></div>
+                </div>
+                <figcaption class="mt-1.5 text-[9px] font-extrabold tracking-[0.18em] text-skinText-800">CELLULAR ELIXIR</figcaption>
+              </figure>
+
+              <!-- Peptide Eye Glaze -->
+              <figure id="fig-eye" class="side-fig absolute bottom-1 right-[4%] sm:right-[10%] z-[5] flex flex-col items-center">
+                <span class="absolute -top-1 -right-2 rotate-6 bg-champagne-500 text-white text-[8px] font-extrabold tracking-wider px-1.5 py-0.5 rounded shadow-sm">FREE · $34</span>
+                <svg viewBox="0 0 72 130" class="h-14 sm:h-24 w-auto" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="egGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FBECEB"/></linearGradient>
+                    <linearGradient id="egCap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#DEC591"/><stop offset="0.5" stop-color="#CBA768"/><stop offset="1" stop-color="#B58E4E"/></linearGradient>
+                  </defs>
+                  <rect x="28" y="8" width="16" height="13" rx="3" fill="url(#egCap)"/>
+                  <rect x="31" y="21" width="10" height="6" fill="#DEC4B8"/>
+                  <rect x="26" y="27" width="18" height="97" rx="8" fill="url(#egGlass)" stroke="#DEC4B8" stroke-width="0.8"/>
+                  <text transform="rotate(-90 35 79)" x="35" y="79" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="4.2" font-weight="600" letter-spacing="1.1" fill="#4A353A">PEPTIDE EYE GLAZE · 15 ML</text>
+                  <rect x="29.5" y="33" width="3" height="84" rx="1.5" fill="#FFFFFF" opacity="0.55"/>
+                </svg>
+                <div class="h-1.5 w-8 -mt-0.5 rounded-full bg-velvetPlum-900/10 blur-[2px]" aria-hidden="true"></div>
+                <figcaption class="mt-1 text-[8px] sm:text-[9px] font-extrabold tracking-[0.18em] text-skinText-700/80">EYE GLAZE</figcaption>
+              </figure>
+            </div>
+
+            <div class="relative px-6 pb-5 text-center">
+              <h3 class="font-serif text-2xl font-bold text-skinText-900 swappable" id="offer-headline">The 3-Step Complete Barrier System</h3>
+              <p class="text-xs text-skinText-700 max-w-sm mx-auto mt-1 leading-relaxed swappable" id="offer-subline">Includes Cellular Elixir (50 ml), Silk Infusion Cream (50 ml) and a free full-size Peptide Eye Glaze ($34 value).</p>
+            </div>
+          </div>
+
+          <!-- pricing tiers -->
+          <div class="space-y-3 mb-5" role="radiogroup" aria-label="Choose your bundle">
+            <div id="tier-bundle" class="tier active p-4 rounded-xl flex items-center justify-between gap-3" role="radio" aria-checked="true" tabindex="0" onclick="selectBundle('bundle')">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="radio"><span class="dot"></span></span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-bold text-skinText-900">Complete 3-Piece System</span>
+                    <span class="text-[9px] font-extrabold uppercase bg-velvetPlum-700 text-white px-2 py-0.5 rounded">Save 38%</span>
+                  </div>
+                  <p class="text-[11px] text-skinText-700 mt-0.5">Full 60-day supply + free full-size eye glaze</p>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-xs text-skinText-700/50 line-through mr-1">$112</span>
+                <span class="font-serif text-xl font-bold text-velvetPlum-800">$68</span>
+              </div>
+            </div>
+
+            <div id="tier-single" class="tier p-4 rounded-xl flex items-center justify-between gap-3" role="radio" aria-checked="false" tabindex="0" onclick="selectBundle('single')">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="radio"><span class="dot"></span></span>
+                <div class="min-w-0">
+                  <span class="text-xs font-bold text-skinText-900 block">Single Cellular Elixir (50 ml)</span>
+                  <p class="text-[11px] text-skinText-700 mt-0.5">30-day pure moisture-barrier reset</p>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="font-serif text-xl font-bold text-skinText-900">$38</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- express checkout -->
+          <button type="button" onclick="handleDirectCheckout()" class="w-full py-4 bg-velvetPlum-700 hover:bg-velvetPlum-800 text-white rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-roseQuartz-400">
+            <span id="cta-button-text">Claim 3-Piece System • $68 (Free Shipping)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+
+          <div class="pt-4 mt-5 border-t border-pearl-200 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[10px] sm:text-[11px] text-skinText-700">
+            <span class="flex items-center gap-1.5"><i data-lucide="package-check" class="w-3.5 h-3.5 text-velvetPlum-700"></i> Free 2-day carbon-neutral delivery</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5 text-velvetPlum-700"></i> 256-bit SSL checkout</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= 48-HOUR REPAIR TIMELINE ================= -->
+<section id="timeline" class="py-16 bg-pearl-25 border-b border-pearl-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <header class="max-w-2xl mb-12 reveal">
+      <span class="text-xs font-bold uppercase tracking-widest text-velvetPlum-700">The Repair Window</span>
+      <h2 class="font-serif text-3xl sm:text-4xl text-skinText-900 mt-2">48 Hours to a Sealed Barrier</h2>
+      <p class="text-xs sm:text-sm text-skinText-700 mt-3 leading-relaxed">What our instrumentation records between your very first application and day 28 — hour by hour.</p>
+    </header>
+
+    <div class="relative">
+      <!-- connector lines: light track + animated plum progress -->
+      <div class="hidden md:block absolute top-[7px] left-0 right-0 h-px bg-pearl-200" aria-hidden="true"></div>
+      <div class="tl-line-h hidden md:block absolute top-[7px] left-0 right-0 h-px bg-velvetPlum-600/70" aria-hidden="true"></div>
+      <div class="md:hidden absolute left-[7px] top-2 bottom-2 w-px bg-pearl-200" aria-hidden="true"></div>
+      <div class="tl-line-v md:hidden absolute left-[7px] top-2 bottom-2 w-px bg-velvetPlum-600/70" aria-hidden="true"></div>
+
+      <div class="grid md:grid-cols-4 gap-10 md:gap-8">
+        <div class="tl-item relative pl-9 md:pl-0 md:pt-9">
+          <span class="tl-dot absolute left-0 top-1 md:top-0 w-4 h-4 rounded-full bg-white border-2 border-velvetPlum-600 z-10" aria-hidden="true"></span>
+          <span class="block text-[10px] font-extrabold tracking-[0.22em] text-champagne-600">HOUR 00</span>
+          <h3 class="font-serif text-lg font-bold text-skinText-900 mt-1.5">First Contact</h3>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-1.5">Biomimetic lipids recognise and bond to damaged barrier segments on application.</p>
+        </div>
+        <div class="tl-item relative pl-9 md:pl-0 md:pt-9">
+          <span class="tl-dot absolute left-0 top-1 md:top-0 w-4 h-4 rounded-full bg-white border-2 border-velvetPlum-600 z-10" aria-hidden="true"></span>
+          <span class="block text-[10px] font-extrabold tracking-[0.22em] text-champagne-600">HOUR 02</span>
+          <h3 class="font-serif text-lg font-bold text-skinText-900 mt-1.5">Water Loss Plummets</h3>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-1.5">TEWL readings drop sharply as the 5-weight hyaluronate network saturates the stratum corneum.</p>
+        </div>
+        <div class="tl-item relative pl-9 md:pl-0 md:pt-9">
+          <span class="tl-dot absolute left-0 top-1 md:top-0 w-4 h-4 rounded-full bg-white border-2 border-velvetPlum-600 z-10" aria-hidden="true"></span>
+          <span class="block text-[10px] font-extrabold tracking-[0.22em] text-champagne-600">HOUR 48</span>
+          <h3 class="font-serif text-lg font-bold text-skinText-900 mt-1.5">Barrier Sealed</h3>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-1.5">Ceramide NP cement fills the intercellular gaps; stinging, tightness and flaking subside.</p>
+        </div>
+        <div class="tl-item relative pl-9 md:pl-0 md:pt-9">
+          <span class="tl-dot absolute left-0 top-1 md:top-0 w-4 h-4 rounded-full bg-velvetPlum-600 border-2 border-velvetPlum-600 z-10" aria-hidden="true"></span>
+          <span class="block text-[10px] font-extrabold tracking-[0.22em] text-champagne-600">DAY 28</span>
+          <h3 class="font-serif text-lg font-bold text-skinText-900 mt-1.5">Dermal Remodel</h3>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-1.5">Collagen synthesis upregulates; measured elasticity rebound improves by 89.6%.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLINICAL ASSAY REPORT ================= -->
+<section class="py-16 bg-white border-b border-pearl-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <header class="text-center max-w-xl mx-auto mb-12 reveal">
+      <span class="text-xs font-bold uppercase tracking-widest text-velvetPlum-700">Third-Party Double-Blind Clinical Results</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-normal text-skinText-900 mt-2">Real Biological Change, Not Optical Illusions</h2>
+      <p class="text-xs sm:text-sm text-skinText-700 mt-3 leading-relaxed">Conducted on 64 participants over 28 consecutive days under supervised clinical dermatological instrumentation.</p>
+    </header>
+
+    <div class="reveal rounded-3xl border border-roseQuartz-200 bg-pearl-50 overflow-hidden">
+      <!-- report masthead -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-velvetPlum-800 px-5 sm:px-7 py-3.5">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="flask-conical" class="w-4 h-4 text-champagne-400"></i>
+          <span class="text-[11px] font-bold tracking-[0.18em] text-white">CLINICAL ASSAY REPORT · REF LL-2847</span>
+        </div>
+        <span class="text-[10px] font-semibold tracking-wider text-roseQuartz-200">N = 64 · 28 DAYS · DOUBLE-BLIND</span>
+      </div>
+
+      <!-- assay readings -->
+      <div class="grid grid-cols-1 md:grid-cols-4">
+        <div class="stat-cell p-6 sm:p-7 border-b md:border-b-0 md:border-r border-pearl-200">
+          <div class="font-serif text-4xl font-bold text-velvetPlum-800"><span class="count" data-count="98.4" data-decimals="1">98.4</span>%</div>
+          <p class="text-xs font-bold text-skinText-900 mt-2">TEWL Barrier Retention</p>
+          <p class="text-[11px] text-skinText-700 leading-relaxed mt-1.5">Significant reduction in transepidermal water loss within 15 minutes of application.</p>
+          <div class="mt-4 h-1 rounded-full bg-pearl-200 overflow-hidden"><div class="stat-bar h-full rounded-full bg-velvetPlum-700" data-width="98.4" style="width:0%"></div></div>
+        </div>
+        <div class="stat-cell p-6 sm:p-7 border-b md:border-b-0 md:border-r border-pearl-200">
+          <div class="font-serif text-4xl font-bold text-velvetPlum-800"><span class="count" data-count="94.1" data-decimals="1">94.1</span>%</div>
+          <p class="text-xs font-bold text-skinText-900 mt-2">Erythema &amp; Redness Relief</p>
+          <p class="text-[11px] text-skinText-700 leading-relaxed mt-1.5">Visible microvascular calming verified across reactive, rosacea-prone skin types.</p>
+          <div class="mt-4 h-1 rounded-full bg-pearl-200 overflow-hidden"><div class="stat-bar h-full rounded-full bg-velvetPlum-700" data-width="94.1" style="width:0%"></div></div>
+        </div>
+        <div class="stat-cell p-6 sm:p-7 border-b md:border-b-0 md:border-r border-pearl-200">
+          <div class="font-serif text-4xl font-bold text-velvetPlum-800"><span class="count" data-count="100" data-decimals="0">100</span>%</div>
+          <p class="text-xs font-bold text-skinText-900 mt-2">Zero Pore Blockage</p>
+          <p class="text-[11px] text-skinText-700 leading-relaxed mt-1.5">Certified non-comedogenic; safe for post-procedure and breakout-prone complexions.</p>
+          <div class="mt-4 h-1 rounded-full bg-pearl-200 overflow-hidden"><div class="stat-bar h-full rounded-full bg-velvetPlum-700" data-width="100" style="width:0%"></div></div>
+        </div>
+        <div class="stat-cell p-6 sm:p-7">
+          <div class="font-serif text-4xl font-bold text-velvetPlum-800"><span class="count" data-count="89.6" data-decimals="1">89.6</span>%</div>
+          <p class="text-xs font-bold text-skinText-900 mt-2">Cellular Elasticity Bounce</p>
+          <p class="text-[11px] text-skinText-700 leading-relaxed mt-1.5">Clinically measured improvement in dermal rebound time and epidermal plumping.</p>
+          <div class="mt-4 h-1 rounded-full bg-pearl-200 overflow-hidden"><div class="stat-bar h-full rounded-full bg-velvetPlum-700" data-width="89.6" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- report footer -->
+      <div class="border-t border-pearl-200 px-5 sm:px-7 py-3 flex flex-wrap items-center justify-between gap-2 bg-white">
+        <span class="text-[10px] text-skinText-700 flex items-center gap-1.5"><i data-lucide="microscope" class="w-3.5 h-3.5 text-velvetPlum-700"></i> Corneometry, TEWL probes &amp; dermatologist-scored erythema grading</span>
+        <span class="text-[10px] font-semibold text-champagne-600 tracking-wider">INDEPENDENT LABORATORY · GENEVA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FORMULA TRANSPARENCY ================= -->
+<section class="py-16 bg-pearl-25 border-b border-pearl-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2 reveal">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-velvetPlum-700">Formula Transparency</span>
+        <h2 class="font-serif text-3xl sm:text-4xl text-skinText-900 mt-2">Pure Bio-Active Compounds</h2>
+      </div>
+      <p class="text-xs sm:text-sm text-skinText-700 max-w-md leading-relaxed">Formulated without essential oils, synthetic fragrances, silicones, sulfates or drying alcohols. Only high-potency, bio-identical lipids.</p>
+    </div>
+
+    <div class="border-t border-b border-pearl-200">
+      <div class="grid md:grid-cols-2">
+        <div class="ing reveal flex gap-5 py-8 md:pr-10 border-b border-pearl-200 md:border-r">
+          <span class="num font-serif italic text-5xl leading-none text-champagne-400 select-none" aria-hidden="true">01</span>
+          <div>
+            <span class="block text-[10px] font-extrabold tracking-[0.2em] text-velvetPlum-600/80">EXTREMOLYTE · AMINO ACID</span>
+            <h4 class="font-serif text-xl font-bold text-skinText-900 mt-1">2.0% Pure Ectoin</h4>
+            <p class="text-xs text-skinText-700 leading-relaxed mt-2 max-w-md">An extremolyte amino acid that builds a microscopic hydration shield around cellular membranes, guarding skin against heat stress and blue light.</p>
+          </div>
+        </div>
+        <div class="ing reveal flex gap-5 py-8 md:pl-10 border-b border-pearl-200" style="transition-delay:80ms">
+          <span class="num font-serif italic text-5xl leading-none text-champagne-400 select-none" aria-hidden="true">02</span>
+          <div>
+            <span class="block text-[10px] font-extrabold tracking-[0.2em] text-velvetPlum-600/80">HUMECTANT · 5 MOLECULAR WEIGHTS</span>
+            <h4 class="font-serif text-xl font-bold text-skinText-900 mt-1">5-Weight Hyaluronate</h4>
+            <p class="text-xs text-skinText-700 leading-relaxed mt-2 max-w-md">Multi-molecular cross-linked hyaluronic chains penetrating from the uppermost stratum corneum down to deep dermal reservoirs.</p>
+          </div>
+        </div>
+        <div class="ing reveal flex gap-5 py-8 md:pr-10 border-b md:border-b-0 border-pearl-200 md:border-r" style="transition-delay:160ms">
+          <span class="num font-serif italic text-5xl leading-none text-champagne-400 select-none" aria-hidden="true">03</span>
+          <div>
+            <span class="block text-[10px] font-extrabold tracking-[0.2em] text-velvetPlum-600/80">LIPID · BARRIER CEMENT</span>
+            <h4 class="font-serif text-xl font-bold text-skinText-900 mt-1">Bio-Identical Ceramide NP</h4>
+            <p class="text-xs text-skinText-700 leading-relaxed mt-2 max-w-md">Plant-derived lipid mortar that mimics the skin’s natural intercellular cement, permanently sealing cracked, flaking texture.</p>
+          </div>
+        </div>
+        <div class="ing reveal flex gap-5 py-8 md:pl-10" style="transition-delay:240ms">
+          <span class="num font-serif italic text-5xl leading-none text-champagne-400 select-none" aria-hidden="true">04</span>
+          <div>
+            <span class="block text-[10px] font-extrabold tracking-[0.2em] text-velvetPlum-600/80">BOTANICAL · COLLAGEN SIGNAL</span>
+            <h4 class="font-serif text-xl font-bold text-skinText-900 mt-1">Centella Phyto-Stem</h4>
+            <p class="text-xs text-skinText-700 leading-relaxed mt-2 max-w-md">Standardized titrated extract of Asiaticoside that accelerates collagen synthesis and suppresses acute flare-ups on contact.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VERIFIED TRIAL LOGS ================= -->
+<section class="py-16 bg-white border-b border-pearl-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <header class="text-center max-w-xl mx-auto mb-12 reveal">
+      <span class="text-xs font-bold uppercase tracking-widest text-velvetPlum-700">Verified Consumer Trial Logs</span>
+      <h2 class="font-serif text-3xl sm:text-4xl text-skinText-900 mt-2">Documented Skin Turnarounds</h2>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <div class="reveal relative bg-pearl-50 border border-pearl-200 rounded-2xl p-6 flex flex-col justify-between">
+        <span class="absolute top-4 right-5 font-serif text-5xl leading-none text-roseQuartz-200 select-none" aria-hidden="true">”</span>
+        <div>
+          <div class="flex items-center justify-between gap-3">
+            <span class="flex gap-0.5 text-amber-400">
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            </span>
+            <span class="text-[9px] font-bold tracking-[0.18em] text-skinText-700/60">LOG #0847</span>
+          </div>
+          <h4 class="font-bold text-sm text-skinText-900 mt-3">“Saved my skin after over-exfoliation.”</h4>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-2">“I completely burned my barrier with harsh acids. Everything stung — even tap water. Within 3 days of the Cellular Elixir the burning stopped, and my skin has that glassy, bouncy glow again.”</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-pearl-200 flex items-center justify-between gap-2">
+          <div>
+            <p class="text-xs font-bold text-skinText-900">Dr. Serena M., 34</p>
+            <p class="text-[10px] text-skinText-700">Concern: Reactive Barrier</p>
+          </div>
+          <span class="text-[9px] bg-roseQuartz-100 text-velvetPlum-800 font-bold px-2 py-0.5 rounded whitespace-nowrap">Verified Buyer</span>
+        </div>
+      </div>
+
+      <div class="reveal relative bg-pearl-50 border border-pearl-200 rounded-2xl p-6 flex flex-col justify-between" style="transition-delay:100ms">
+        <span class="absolute top-4 right-5 font-serif text-5xl leading-none text-roseQuartz-200 select-none" aria-hidden="true">”</span>
+        <div>
+          <div class="flex items-center justify-between gap-3">
+            <span class="flex gap-0.5 text-amber-400">
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            </span>
+            <span class="text-[9px] font-bold tracking-[0.18em] text-skinText-700/60">LOG #1129</span>
+          </div>
+          <h4 class="font-bold text-sm text-skinText-900 mt-3">“Makeup sits like a dream now.”</h4>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-2">“I used to get dry, flaky patches on my cheeks and nose no matter which moisturizer I tried. The Silk Infusion Cream completely melted away the texture without causing a single breakout.”</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-pearl-200 flex items-center justify-between gap-2">
+          <div>
+            <p class="text-xs font-bold text-skinText-900">Camila R., 28</p>
+            <p class="text-[10px] text-skinText-700">Concern: Flaky Dehydration</p>
+          </div>
+          <span class="text-[9px] bg-roseQuartz-100 text-velvetPlum-800 font-bold px-2 py-0.5 rounded whitespace-nowrap">Verified Buyer</span>
+        </div>
+      </div>
+
+      <div class="reveal relative bg-pearl-50 border border-pearl-200 rounded-2xl p-6 flex flex-col justify-between" style="transition-delay:200ms">
+        <span class="absolute top-4 right-5 font-serif text-5xl leading-none text-roseQuartz-200 select-none" aria-hidden="true">”</span>
+        <div>
+          <div class="flex items-center justify-between gap-3">
+            <span class="flex gap-0.5 text-amber-400">
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            </span>
+            <span class="text-[9px] font-bold tracking-[0.18em] text-skinText-700/60">LOG #0653</span>
+          </div>
+          <h4 class="font-bold text-sm text-skinText-900 mt-3">“Better than my $280 luxury creams.”</h4>
+          <p class="text-xs text-skinText-700 leading-relaxed mt-2">“The formulation is pure science. No heavy perfumes, no greasy film — it sinks in immediately. My skin looks plump, rested and naturally illuminated all day.”</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-pearl-200 flex items-center justify-between gap-2">
+          <div>
+            <p class="text-xs font-bold text-skinText-900">Victoria K., 46</p>
+            <p class="text-[10px] text-skinText-700">Concern: Loss of Elasticity</p>
+          </div>
+          <span class="text-[9px] bg-roseQuartz-100 text-velvetPlum-800 font-bold px-2 py-0.5 rounded whitespace-nowrap">Verified Buyer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EMPTY-BOTTLE GUARANTEE ================= -->
+<section class="py-16 bg-roseQuartz-100 border-b border-roseQuartz-200">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <div class="reveal space-y-5">
+      <div class="w-12 h-12 mx-auto rounded-full bg-white text-velvetPlum-700 flex items-center justify-center shadow-sm">
+        <i data-lucide="award" class="w-6 h-6"></i>
+      </div>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-skinText-900">The 30-Day “Empty Bottle” Radiance Guarantee</h2>
+      <p class="text-xs sm:text-sm text-skinText-700 max-w-xl mx-auto leading-relaxed">
+        Try the complete routine for a full 30 days. If your skin doesn’t feel substantially plumper, calmer and visibly glowing,
+        we’ll refund 100% of your investment immediately — you don’t even need to mail the bottles back.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-semibold text-velvetPlum-800">
+        <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i> No bottles to ship back</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i> No questions asked</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i> Refunded within 24 hours</span>
+      </div>
+      <div class="pt-2">
+        <a href="#order-now" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-velvetPlum-700 hover:bg-velvetPlum-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:shadow-lg">
+          Try Risk-Free Today
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="py-16 bg-white">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6">
+    <header class="text-center mb-10 reveal">
+      <span class="text-xs font-bold uppercase tracking-widest text-velvetPlum-700">Dermatologist Q&amp;A</span>
+      <h2 class="font-serif text-2xl sm:text-3xl text-skinText-900 mt-2">Frequently Asked Questions</h2>
+    </header>
+
+    <div class="space-y-3">
+      <div id="faq-1" class="faq-item open border border-pearl-200 rounded-xl overflow-hidden bg-white">
+        <button type="button" onclick="toggleFaq(1)" class="w-full p-4 text-left flex items-center justify-between gap-4 bg-pearl-50 hover:bg-pearl-100 transition-colors">
+          <span class="font-bold text-xs sm:text-sm text-skinText-900">Can I use this alongside Retinol or Vitamin C?</span>
+          <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-velvetPlum-700 shrink-0"></i>
+        </button>
+        <div class="faq-body"><div>
+          <p class="p-4 text-xs text-skinText-700 leading-relaxed border-t border-pearl-200">Yes. The Cellular Barrier Elixir is specifically formulated to buffer and support the skin barrier when using potent actives. Apply the Elixir first to damp skin, follow with your Retinol or L-Ascorbic Acid serum, then seal everything in with the Silk Infusion Cream.</p>
+        </div></div>
+      </div>
+
+      <div id="faq-2" class="faq-item border border-pearl-200 rounded-xl overflow-hidden bg-white">
+        <button type="button" onclick="toggleFaq(2)" class="w-full p-4 text-left flex items-center justify-between gap-4 bg-pearl-50 hover:bg-pearl-100 transition-colors">
+          <span class="font-bold text-xs sm:text-sm text-skinText-900">Is this suitable for cystic, hormonal or acne-prone skin?</span>
+          <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-velvetPlum-700 shrink-0"></i>
+        </button>
+        <div class="faq-body"><div>
+          <p class="p-4 text-xs text-skinText-700 leading-relaxed border-t border-pearl-200">Absolutely. Breakout-prone skin often suffers from an impaired stratum corneum, which allows bacterial proliferation. Our formula is 100% oil-free, non-comedogenic and contains Centella to visibly reduce active inflammatory redness.</p>
+        </div></div>
+      </div>
+
+      <div id="faq-3" class="faq-item border border-pearl-200 rounded-xl overflow-hidden bg-white">
+        <button type="button" onclick="toggleFaq(3)" class="w-full p-4 text-left flex items-center justify-between gap-4 bg-pearl-50 hover:bg-pearl-100 transition-colors">
+          <span class="font-bold text-xs sm:text-sm text-skinText-900">How long does one Starter System typically last?</span>
+          <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-velvetPlum-700 shrink-0"></i>
+        </button>
+        <div class="faq-body"><div>
+          <p class="p-4 text-xs text-skinText-700 leading-relaxed border-t border-pearl-200">With regular morning and evening use — 2–3 drops of Elixir and a pea-sized amount of cream — the full 3-Piece System lasts approximately 60 to 75 days.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-pearl-50 border-t border-pearl-200 py-10">
+  <div class="max-w-6xl mx-auto px-4 flex flex-col items-center gap-3 text-center">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-full bg-velvetPlum-700 text-pearl-25 flex items-center justify-center font-serif text-xs font-bold">L</div>
+      <span class="font-serif text-lg font-bold tracking-tight text-skinText-900">LUMIÈRE LABS</span>
+    </div>
+    <p class="text-[11px] text-skinText-700 font-medium">©2026 WebNova Studio|RR Web Designers</p>
+  </div>
+</footer>
+
+<!-- ================= CHECKOUT TOAST ================= -->
+<div id="toast" class="fixed bottom-6 right-4 sm:right-6 z-50 bg-velvetPlum-800 text-white pl-4 pr-5 py-3.5 rounded-2xl shadow-2xl text-xs font-semibold flex items-center gap-3 pointer-events-none max-w-[calc(100vw-2rem)]">
+  <span class="w-6 h-6 rounded-full bg-velvetPlum-600 flex items-center justify-center shrink-0">
+    <i data-lucide="check" class="w-3.5 h-3.5 text-roseQuartz-200"></i>
+  </span>
+  <span id="toast-text">Selected package locked — redirecting to secure express checkout…</span>
+</div>
+
+<script>
+  if (window.lucide) lucide.createIcons();
+
+  /* ---------- micro-fade helper for swapping dynamic copy ---------- */
+  function fadeSwap(el, fn) {
+    el.classList.add('swapping');
+    setTimeout(() => { fn(); el.classList.remove('swapping'); }, 190);
+  }
+
+  /* ---------- skin priority matcher ---------- */
+  const skinProfiles = {
+    barrier: {
+      headline: 'The 3-Step Complete Barrier System',
+      message: '<strong>Clinical Recommendation:</strong> our biomimetic lipid trio rapidly seals peeling flakiness and calms micro-inflammation within two applications.'
+    },
+    radiance: {
+      headline: 'The Glass Radiance Protocol',
+      message: '<strong>Clinical Recommendation:</strong> deep cellular hydration eliminates surface light-scattering dryness, creating instant dewy bounce and mirror shine.'
+    },
+    elasticity: {
+      headline: 'The Peptide Plump Protocol',
+      message: '<strong>Clinical Recommendation:</strong> Ectoin and Ceramide NP lift skin-matrix rebound velocity by 89.6%, smoothing crepey texture and preventing future moisture evaporation.'
+    }
+  };
+
+  function setSkinProfile(type) {
+    const d = skinProfiles[type];
+    document.querySelectorAll('.skin-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-skin-' + type).classList.add('active');
+    fadeSwap(document.getElementById('offer-headline'), () => { document.getElementById('offer-headline').textContent = d.headline; });
+    fadeSwap(document.getElementById('dynamic-skin-message'), () => { document.getElementById('dynamic-skin-message').innerHTML = d.message; });
+  }
+
+  /* ---------- bundle selector (drives still-life, subline & CTA) ---------- */
+  let activeBundle = 'bundle';
+  const bundleCopy = {
+    bundle: {
+      subline: 'Includes Cellular Elixir (50 ml), Silk Infusion Cream (50 ml) and a free full-size Peptide Eye Glaze ($34 value).',
+      cta: 'Claim 3-Piece System • $68 (Free Shipping)'
+    },
+    single: {
+      subline: 'One full-size Cellular Elixir (50 ml) — a focused, 30-day pure moisture-barrier reset.',
+      cta: 'Claim Single Elixir • $38'
+    }
+  };
+
+  function selectBundle(type) {
+    activeBundle = type;
+    ['bundle', 'single'].forEach(t => {
+      const card = document.getElementById('tier-' + t);
+      const on = t === type;
+      card.classList.toggle('active', on);
+      card.setAttribute('aria-checked', on);
+    });
+    document.getElementById('fig-cream').classList.toggle('gone', type === 'single');
+    document.getElementById('fig-eye').classList.toggle('gone', type === 'single');
+    fadeSwap(document.getElementById('offer-subline'), () => { document.getElementById('offer-subline').textContent = bundleCopy[type].subline; });
+    document.getElementById('cta-button-text').textContent = bundleCopy[type].cta;
+  }
+
+  /* keyboard support for the tier cards */
+  document.querySelectorAll('.tier').forEach(t => {
+    t.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); }
+    });
+  });
+
+  /* ---------- express checkout (simulated) ---------- */
+  let toastTimer = null;
+  function handleDirectCheckout() {
+    const cta = document.getElementById('cta-button-text');
+    document.getElementById('toast-text').textContent = activeBundle === 'bundle'
+      ? 'Complete 3-Piece System + free Eye Glaze added — opening secure checkout…'
+      : 'Single Cellular Elixir added — opening secure checkout…';
+    cta.textContent = 'Opening secure checkout…';
+    setTimeout(() => { cta.textContent = bundleCopy[activeBundle].cta; }, 1800);
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
+  }
+
+  /* ---------- FAQ accordion ---------- */
+  function toggleFaq(id) {
+    const item = document.getElementById('faq-' + id);
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  /* ---------- eased counters ---------- */
+  function runCounter(el) {
+    const end = parseFloat(el.dataset.count);
+    const dec = parseInt(el.dataset.decimals || '0', 10);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const dur = 1400, t0 = performance.now();
+    const ease = t => 1 - Math.pow(1 - t, 3);
+    const step = now => {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = prefix + (end * ease(p)).toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- observers: reveals, counters, bars, timeline ---------- */
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  const cellObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.querySelectorAll('.count').forEach(runCounter);
+      e.target.querySelectorAll('.stat-bar').forEach(b => { b.style.width = b.dataset.width + '%'; });
+      cellObs.unobserve(e.target);
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll('.stat-cell').forEach(c => cellObs.observe(c));
+
+  const tl = document.getElementById('timeline');
+  const tlObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { tl.classList.add('in-view'); tlObs.disconnect(); } });
+  }, { threshold: 0.25 });
+  tlObs.observe(tl);
+
+  /* ---------- header elevation on scroll ---------- */
+  const headerEl = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    headerEl.classList.toggle('shadow-sm', window.scrollY > 8);
+  }, { passive: true });
+</script>
+</body>
+</html>
